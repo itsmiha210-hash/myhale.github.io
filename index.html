@@ -1,0 +1,1826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+    Duolingo Retention Case Study
+    GitHub Pages-ready single-file version.
+    Save this file as index.html in the repository root.
+    Content is pre-rendered so the page still displays even if JavaScript fails.
+  -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A product management case study on improving retention rate on Duolingo." />
+  <title>Improving Retention Rate on Duolingo | Product Case Study</title>
+
+  <style>
+    /* ================================
+       01. Design Tokens
+    ================================= */
+    :root {
+      --green: #58cc02;
+      --green-dark: #2d7a00;
+      --green-soft: #f0fde7;
+      --blue: #1cb0f6;
+      --blue-soft: #edf9ff;
+      --orange: #ff9600;
+      --orange-soft: #fff8ed;
+      --purple: #ce82ff;
+      --purple-soft: #f8f0ff;
+      --red: #ff4b4b;
+      --red-soft: #fff0f0;
+
+      --ink: #151515;
+      --text: #3d3d3d;
+      --muted: #777777;
+      --line: #e9e4d8;
+      --paper: #fffaf0;
+      --white: #ffffff;
+
+      --shadow-sm: 0 10px 30px rgba(20, 20, 20, 0.06);
+      --shadow-md: 0 18px 50px rgba(20, 20, 20, 0.10);
+      --radius-sm: 12px;
+      --radius-md: 20px;
+      --radius-lg: 32px;
+      --max-width: 1120px;
+    }
+
+    /* ================================
+       02. Base
+    ================================= */
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(88, 204, 2, 0.16), transparent 34rem),
+        radial-gradient(circle at top right, rgba(28, 176, 246, 0.14), transparent 34rem),
+        linear-gradient(180deg, #fff9ea 0%, #fff 32%, #fffaf0 100%);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    p {
+      margin: 0;
+      color: var(--text);
+      line-height: 1.75;
+    }
+
+    strong {
+      color: var(--ink);
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 1.1rem;
+    }
+
+    li {
+      margin-bottom: 0.45rem;
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    .page-shell {
+      overflow: hidden;
+    }
+
+    .container {
+      width: min(var(--max-width), calc(100% - 2rem));
+      margin: 0 auto;
+    }
+
+    /* ================================
+       03. Hero
+    ================================= */
+    .hero {
+      position: relative;
+      padding: 1rem 0 4.5rem;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: var(--green);
+      color: var(--white);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .topbar-pill {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(21, 21, 21, 0.08);
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(12px);
+      border-radius: 999px;
+      padding: 0.55rem 0.9rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin-bottom: 1.2rem;
+      padding: 0.5rem 0.8rem;
+      border-radius: 999px;
+      background: #151515;
+      color: #ffffff;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .hero-title {
+      max-width: 760px;
+      margin: 0 0 1.1rem;
+      font-size: clamp(3rem, 7.5vw, 6.8rem);
+      line-height: 0.88;
+      letter-spacing: -0.08em;
+    }
+
+    .hero-title span {
+      display: inline-block;
+      color: var(--green);
+    }
+
+    .hero-description {
+      max-width: 650px;
+      font-size: 1.12rem;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      margin-top: 1.6rem;
+    }
+
+    .meta-chip {
+      padding: 0.7rem 0.95rem;
+      border: 1px solid rgba(21, 21, 21, 0.09);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.78);
+      font-size: 0.86rem;
+      color: var(--text);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .hero-card {
+      position: relative;
+      min-height: 480px;
+      border: 2px solid #151515;
+      border-radius: var(--radius-lg);
+      padding: 1.2rem;
+      background:
+        linear-gradient(135deg, rgba(88, 204, 2, 0.96), rgba(137, 226, 25, 0.96)),
+        #58cc02;
+      box-shadow: 14px 14px 0 #151515;
+      transform: rotate(2deg);
+    }
+
+    .hero-card-inner {
+      height: 100%;
+      min-height: 440px;
+      border-radius: 24px;
+      padding: 1.2rem;
+      background: rgba(255, 255, 255, 0.95);
+      transform: rotate(-2deg);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .duo-face {
+      height: 170px;
+      border-radius: 24px;
+      display: grid;
+      place-items: center;
+      font-size: 5rem;
+      background:
+        radial-gradient(circle at 35% 35%, rgba(255,255,255,0.9), transparent 24%),
+        linear-gradient(135deg, var(--green-soft), #d8ffc2);
+      border: 1px solid rgba(88, 204, 2, 0.25);
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .stat-card {
+      padding: 1rem;
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid rgba(21, 21, 21, 0.08);
+    }
+
+    .stat-value {
+      font-size: 1.55rem;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+    }
+
+    .stat-label {
+      margin-top: 0.2rem;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .stat-sub {
+      margin-top: 0.35rem;
+      color: var(--green-dark);
+      font-size: 0.73rem;
+      font-weight: 800;
+    }
+
+    
+.duo-logo {
+  width: 120px;
+  height: auto;
+  object-fit: contain;
+}
+
+
+    .source-note {
+      margin-top: 1rem;
+      color: rgba(21, 21, 21, 0.48);
+      font-size: 0.78rem;
+      line-height: 1.5;
+    }
+
+    /* ================================
+       04. Navigation
+    ================================= */
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      padding: 0.8rem 0;
+      background: rgba(255, 250, 240, 0.76);
+      backdrop-filter: blur(14px);
+      border-top: 1px solid rgba(21, 21, 21, 0.06);
+      border-bottom: 1px solid rgba(21, 21, 21, 0.08);
+    }
+
+    .nav-track {
+      display: flex;
+      gap: 0.55rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .nav-track::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-button {
+      flex: 0 0 auto;
+      border: 1px solid rgba(21, 21, 21, 0.08);
+      background: #ffffff;
+      color: var(--text);
+      border-radius: 999px;
+      padding: 0.65rem 0.95rem;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+    }
+
+    .nav-button:hover,
+    .nav-button.active {
+      transform: translateY(-2px);
+      background: #151515;
+      color: #ffffff;
+    }
+
+    /* ================================
+       05. Sections
+    ================================= */
+    main {
+      padding: 4rem 0 5rem;
+    }
+
+    .section {
+      scroll-margin-top: 6rem;
+      margin-bottom: 5rem;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 1rem;
+      align-items: start;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-number {
+      display: inline-grid;
+      place-items: center;
+      width: 64px;
+      height: 64px;
+      border-radius: 20px;
+      background: #151515;
+      color: #ffffff;
+      font-weight: 900;
+      box-shadow: 8px 8px 0 var(--green);
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+    }
+
+    .section-kicker {
+      margin-top: 0.65rem;
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 0.98rem;
+      line-height: 1.65;
+    }
+
+    .content-card {
+      border: 1px solid rgba(21, 21, 21, 0.08);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: var(--shadow-sm);
+      padding: 1.35rem;
+    }
+
+    .card-title {
+      margin: 0 0 0.75rem;
+      font-size: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .card-topline {
+      border-top: 6px solid var(--accent, var(--green));
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .callout {
+      padding: 1.6rem;
+      border-radius: var(--radius-md);
+      border: 2px solid var(--accent, var(--orange));
+      background: var(--soft, var(--orange-soft));
+      box-shadow: var(--shadow-sm);
+    }
+
+    .callout-label {
+      margin-bottom: 0.65rem;
+      color: var(--accent, var(--orange));
+      font-size: 0.78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .quote-box {
+      margin-top: 1rem;
+      padding: 1.25rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(206, 130, 255, 0.45);
+      background: var(--purple-soft);
+      color: #6b21a8;
+      font-style: italic;
+      line-height: 1.75;
+    }
+
+    .mini-card {
+      border-radius: var(--radius-md);
+      border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+      background: var(--soft);
+      padding: 1.15rem;
+    }
+
+    .mini-icon {
+      margin-bottom: 0.65rem;
+      font-size: 1.8rem;
+    }
+
+    .mini-title {
+      margin-bottom: 0.5rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    .mini-body {
+      font-size: 0.88rem;
+    }
+
+    .mini-source {
+      margin-top: 0.8rem;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-style: italic;
+      line-height: 1.45;
+    }
+
+    .qa-list {
+      display: grid;
+      gap: 0.9rem;
+      border-left: 5px solid var(--green);
+      padding-left: 1.2rem;
+    }
+
+    .qa-item {
+      padding: 1rem;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(21, 21, 21, 0.06);
+    }
+
+    .qa-question {
+      margin-bottom: 0.35rem;
+      font-weight: 900;
+    }
+
+    .qa-answer {
+      font-size: 0.92rem;
+    }
+
+    /* ================================
+       06. Personas and Pain Points
+    ================================= */
+    .persona-card {
+      border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+      background: var(--soft);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .persona-head {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .persona-emoji {
+      display: grid;
+      place-items: center;
+      width: 54px;
+      height: 54px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.8);
+      font-size: 1.8rem;
+    }
+
+    .persona-name {
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .persona-meta {
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .small-label {
+      margin: 1rem 0 0.35rem;
+      color: var(--accent);
+      font-size: 0.72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .retention-pill {
+      display: inline-block;
+      margin: 0.75rem 0;
+      padding: 0.55rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.7);
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 900;
+    }
+
+    .persona-quote {
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-style: italic;
+      line-height: 1.65;
+    }
+
+    .pain-list {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .pain-card {
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      gap: 1rem;
+      align-items: start;
+      padding: 1.2rem;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(21, 21, 21, 0.08);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .pain-rank {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      background: var(--soft);
+      color: var(--accent);
+      font-weight: 900;
+      font-size: 1.2rem;
+    }
+
+    .pain-title-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 0.45rem;
+    }
+
+    .pain-title {
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    .impact-badge,
+    .solution-tag,
+    .severity-badge,
+    .target-pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 0.3rem 0.65rem;
+      font-size: 0.72rem;
+      font-weight: 900;
+      background: var(--soft);
+      color: var(--accent);
+    }
+
+    .pain-foot {
+      margin-top: 0.6rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.6;
+    }
+
+    /* ================================
+       07. Prioritization and Solutions
+    ================================= */
+    .matrix {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.25rem;
+      overflow: hidden;
+      border: 1px solid rgba(21, 21, 21, 0.1);
+      border-radius: var(--radius-md);
+      background: rgba(21, 21, 21, 0.08);
+    }
+
+    .matrix-cell {
+      padding: 1.15rem;
+      background: var(--soft);
+      border-left: 6px solid var(--accent);
+    }
+
+    .matrix-label {
+      margin-bottom: 0.75rem;
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .matrix-item {
+      margin-bottom: 0.45rem;
+      padding: 0.55rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.86);
+      border: 1px solid rgba(21,21,21,0.06);
+      font-size: 0.83rem;
+      font-weight: 800;
+    }
+
+    .solution-list {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .solution-card {
+      overflow: hidden;
+      border: 1px solid rgba(21, 21, 21, 0.08);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .solution-summary {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 58px 1fr 34px;
+      gap: 0.85rem;
+      align-items: center;
+      border: 0;
+      background: transparent;
+      padding: 1.15rem;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .solution-icon {
+      display: grid;
+      place-items: center;
+      width: 50px;
+      height: 50px;
+      border-radius: 18px;
+      background: var(--soft);
+      font-size: 1.55rem;
+    }
+
+    .solution-name-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 0.45rem;
+    }
+
+    .solution-title {
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    .rice-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .rice-score {
+      color: var(--green-dark);
+      font-weight: 900;
+    }
+
+    .solution-toggle {
+      color: var(--muted);
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .solution-detail {
+      display: none;
+      border-top: 1px solid rgba(21, 21, 21, 0.08);
+      background: #fffdf8;
+      padding: 1.15rem;
+    }
+
+    .solution-card.open .solution-detail {
+      display: block;
+    }
+
+    .why-box {
+      margin-top: 0.85rem;
+      padding: 0.9rem;
+      border-radius: 16px;
+      background: var(--green-soft);
+      color: var(--green-dark);
+      line-height: 1.65;
+      font-size: 0.92rem;
+    }
+
+    .rice-summary {
+      margin-top: 1.2rem;
+      padding: 1.2rem;
+      border-radius: var(--radius-md);
+      background: #151515;
+      color: #ffffff;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .rice-summary-title {
+      margin-bottom: 0.9rem;
+      font-weight: 900;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: minmax(150px, 240px) 1fr 48px;
+      gap: 0.8rem;
+      align-items: center;
+      margin-bottom: 0.65rem;
+    }
+
+    .bar-name {
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 0.84rem;
+    }
+
+    .bar-track {
+      height: 14px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .bar-value {
+      color: #ffffff;
+      font-weight: 900;
+      text-align: right;
+      font-size: 0.85rem;
+    }
+
+    /* ================================
+       08. Metrics, Risks, Sources
+    ================================= */
+    .metric-group {
+      overflow: hidden;
+      border: 1px solid rgba(21, 21, 21, 0.08);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .metric-group-title {
+      padding: 1rem 1.15rem;
+      border-bottom: 1px solid rgba(21, 21, 21, 0.08);
+      background: #fff4d8;
+      font-weight: 900;
+    }
+
+    .metric-row {
+      display: grid;
+      grid-template-columns: 230px 1fr 180px;
+      gap: 1rem;
+      padding: 1rem 1.15rem;
+      border-bottom: 1px solid rgba(21, 21, 21, 0.06);
+      align-items: start;
+    }
+
+    .metric-row:last-child {
+      border-bottom: 0;
+    }
+
+    .metric-name {
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    .metric-desc {
+      font-size: 0.9rem;
+    }
+
+    .target-pill {
+      justify-content: center;
+      text-align: center;
+      background: var(--green-soft);
+      color: var(--green-dark);
+    }
+
+    .risk-card {
+      padding: 1.15rem;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(21,21,21,0.08);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .risk-head {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .risk-title {
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    .mitigation {
+      margin-top: 0.8rem;
+      padding: 0.8rem;
+      border-radius: 16px;
+      background: var(--green-soft);
+      color: var(--green-dark);
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+
+    .sources {
+      padding: 2rem 0 3rem;
+      border-top: 1px solid rgba(21, 21, 21, 0.08);
+    }
+
+    .sources-title {
+      margin-bottom: 0.9rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .source-item {
+      margin-bottom: 0.55rem;
+      padding-left: 0.9rem;
+      border-left: 3px solid var(--line);
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.55;
+    }
+
+    .footer {
+      padding: 2rem 0;
+      background: #151515;
+      color: #ffffff;
+    }
+
+    .footer p {
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 0.9rem;
+    }
+
+    /* ================================
+       09. Responsive
+    ================================= */
+    @media (max-width: 900px) {
+      .hero-grid,
+      .grid-2,
+      .grid-3,
+      .matrix {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-card {
+        transform: none;
+        box-shadow: 9px 9px 0 #151515;
+      }
+
+      .hero-card-inner {
+        transform: none;
+      }
+
+      .metric-row {
+        grid-template-columns: 1fr;
+      }
+
+      .bar-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero {
+        padding-top: 1rem;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+        margin-bottom: 2rem;
+      }
+
+      .hero-title {
+        font-size: clamp(2.7rem, 17vw, 4.4rem);
+      }
+
+      .hero-card {
+        min-height: auto;
+      }
+
+      .hero-card-inner {
+        min-height: auto;
+      }
+
+      .stat-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head {
+        grid-template-columns: 1fr;
+      }
+
+      .section-number {
+        width: 54px;
+        height: 54px;
+      }
+
+      .pain-card {
+        grid-template-columns: 1fr;
+      }
+
+      .solution-summary {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page-shell">
+    <!-- ================================
+         HERO
+    ================================= -->
+    <header class="hero">
+      <div class="container">
+
+        <div class="hero-grid">
+          <div>
+            <div class="eyebrow">Product Case Study</div>
+            <h1 class="hero-title">Improving Retention Rate on <span>Duolingo</span></h1>
+            <p class="hero-description">
+              A product management case study that looks at why users leave, which user groups matter most, and what Duolingo can improve using its own public data.
+            </p>
+
+            <div class="hero-meta">
+              <div class="meta-chip">Retention Strategy</div>
+              <div class="meta-chip">User Research</div>
+              <div class="meta-chip">RICE Prioritisation</div>
+              <div class="meta-chip">Growth Product</div>
+            </div>
+          </div>
+
+          <aside class="hero-card" aria-label="Duolingo key metrics">
+            <div class="hero-card-inner">
+              <div>
+                
+<div class="duo-face">
+  <img src="duolingo-logo.jpg" alt="Duolingo Logo" class="duo-logo">
+</div>
+
+                <div class="stat-grid" id="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value">40.5M</div>
+          <div class="stat-label">DAU (Q4 2024)</div>
+          <div class="stat-sub">+51% YoY</div>
+        </div>
+      
+        <div class="stat-card">
+          <div class="stat-value">116.7M</div>
+          <div class="stat-label">MAU (Q4 2024)</div>
+          <div class="stat-sub">+32% YoY</div>
+        </div>
+      
+        <div class="stat-card">
+          <div class="stat-value">34.7%</div>
+          <div class="stat-label">DAU/MAU Ratio</div>
+          <div class="stat-sub">Record high Q4 2024</div>
+        </div>
+      
+        <div class="stat-card">
+          <div class="stat-value">9.5M</div>
+          <div class="stat-label">Paid Subscribers</div>
+          <div class="stat-sub">+43% YoY</div>
+        </div>
+      </div>
+              </div>
+              <p class="source-note">
+                Sources: Duolingo Q4 FY2024 Shareholder Letter (SEC 8-K); Duolingo Q2 FY2024 Shareholder Letter (SEC 8-K)
+              </p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </header>
+
+    <!-- ================================
+         STICKY NAV
+    ================================= -->
+    <nav class="sticky-nav" aria-label="Case study navigation">
+      <div class="container">
+        <div class="nav-track" id="nav-track">
+        <a class="nav-button active" href="#overview" data-section="overview">
+          Product Overview
+        </a>
+      
+        <a class="nav-button " href="#problem" data-section="problem">
+          Problem Statement
+        </a>
+      
+        <a class="nav-button " href="#why" data-section="why">
+          Why This Problem
+        </a>
+      
+        <a class="nav-button " href="#research" data-section="research">
+          User Research & Personas
+        </a>
+      
+        <a class="nav-button " href="#painpoints" data-section="painpoints">
+          Pain Points
+        </a>
+      
+        <a class="nav-button " href="#prioritization" data-section="prioritization">
+          Prioritization
+        </a>
+      
+        <a class="nav-button " href="#solutions" data-section="solutions">
+          Solutions
+        </a>
+      
+        <a class="nav-button " href="#metrics" data-section="metrics">
+          Metrics
+        </a>
+      
+        <a class="nav-button " href="#risks" data-section="risks">
+          Risks & Mitigations
+        </a>
+      </div>
+      </div>
+    </nav>
+
+    <main class="container">
+      <!-- ================================
+           01. Product Overview
+      ================================= -->
+      <section class="section" id="overview">
+        <div class="section-head">
+          <div class="section-number">01</div>
+          <div>
+            <h2 class="section-title">Product Overview</h2>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <article class="content-card card-topline" style="--accent: var(--green);">
+            <h3 class="card-title" style="color: var(--green);">What is Duolingo?</h3>
+            <p>
+              Duolingo is a mobile learning app designed to make education engaging and accessible through interactive digital experiences. Best known for its language-learning platform, the app offers courses across 42 languages, alongside subjects such as math, music, and chess. The learning method incorporates gamification to motivate users with points, rewards, and interactive lessons featuring spaced repetition.
+            </p>
+          </article>
+
+          <article class="content-card card-topline" style="--accent: var(--blue);">
+            <h3 class="card-title" style="color: var(--blue);">Business Model</h3>
+            <ul>
+              <li><strong>Subscriptions</strong>: Super + Max tiers (~91% of revenue)</li>
+              <li><strong>Advertising</strong>: Free-tier users see ads (~$13M/quarter)</li>
+              <li><strong>Duolingo English Test</strong>: proficiency certification</li>
+              <li><strong>In-App Purchases</strong>: gems, boosts, streak repairs</li>
+            </ul>
+          </article>
+        </div>
+
+        <article class="content-card card-topline" style="--accent: var(--orange); margin-top: 1rem;">
+          <h3 class="card-title" style="color: var(--orange);">Why Retention Is Duolingo's Core Strategic Lever</h3>
+          <p>
+            Duolingo grows mainly through the product itself. Much of its acquisition comes from word of mouth and viral social content, so retention becomes the part that keeps growth moving. Users who stay are more likely to become paid subscribers and to bring in new users through referrals.
+          </p>
+          <p style="margin-top: 0.7rem;">
+            In the Q1 2024 shareholder letter, CEO Luis von Ahn wrote: <em>"Our DAU-to-MAU ratio, a measure of user engagement, reached a record high thanks to the thousands of product improvements that have compounded over time."</em> Internally, Duolingo uses <strong>CURR (Current User Retention Rate)</strong> as its North Star metric, which tracks the share of users active today who return 2 weeks later.
+          </p>
+        </article>
+      </section>
+
+      <!-- ================================
+           02. Problem Statement
+      ================================= -->
+      <section class="section" id="problem">
+        <div class="section-head">
+          <div class="section-number">02</div>
+          <div>
+            <h2 class="section-title">Problem Statement</h2>
+          </div>
+        </div>
+
+        <div class="callout" style="--accent: var(--orange); --soft: var(--orange-soft);">
+          <div class="callout-label">Core Problem</div>
+          <p>
+            Even with DAU growing 51% year over year to 40.5M in Q4 2024, <strong>many Duolingo users still leave before the app becomes a daily habit</strong>. A DAU/MAU ratio of 34.7% is a record high, but it also means <strong>around 65% of monthly users are not coming back every day</strong>. For new users, the biggest drop-off happens in the first 10 days. Dormant users who return have Day-30 retention as low as 5%, which leaves a large re-engagement opportunity.
+          </p>
+        </div>
+
+        <div class="quote-box">
+          "Duolingo did not win language learning because it had the best content library. It won because it engineered daily practice into a repeatable habit loop, then scaled that loop." Source: Propel, Duolingo Retention Deep-Dive (2025)
+        </div>
+      </section>
+
+      <!-- ================================
+           03. Why This Problem
+      ================================= -->
+      <section class="section" id="why">
+        <div class="section-head">
+          <div class="section-number">03</div>
+          <div>
+            <h2 class="section-title">Why This Problem</h2>
+          </div>
+        </div>
+
+        <div class="grid-3" id="why-grid">
+        <article class="mini-card" style="--accent: #58CC02; --soft: #f0fde7;">
+          <div class="mini-icon">💸</div>
+          <div class="mini-title">Revenue at stake</div>
+          <p class="mini-body">Paid subscribers (9.5M in Q4 2024) mostly come from users who keep using the product. When a user churns before converting, Duolingo loses a potential revenue path. Subscription bookings grew 43% YoY, so this engine is worth protecting.</p>
+          <div class="mini-source">Source: Duolingo Q4 FY2024 SEC 8-K</div>
+        </article>
+      
+        <article class="mini-card" style="--accent: #1CB0F6; --soft: #edf9ff;">
+          <div class="mini-icon">📊</div>
+          <div class="mini-title">DAU/MAU ceiling risk</div>
+          <p class="mini-body">Duolingo's DAU/MAU went from around 26% in 2020 to 34.7% in Q4 2024. Growth is still strong, but the pace is starting to tighten. Without deeper retention improvements, this ratio could plateau and slow both DAU growth and subscriber conversion.</p>
+          <div class="mini-source">Source: Duolingo Q4 FY2024 SEC 8-K; StriveCloud Analysis</div>
+        </article>
+      
+        <article class="mini-card" style="--accent: #FF9600; --soft: #fff8ed;">
+          <div class="mini-icon">🌍</div>
+          <div class="mini-title">EdTech churn is uniquely severe</div>
+          <p class="mini-body">Education apps historically retain only 1.76% of users after Day 1. Duolingo's 2012 next-day retention was 12%. The company's entire growth story is built on improving this structurally unfavorable baseline.</p>
+          <div class="mini-source">Source: StriveCloud: Duolingo Gamification Case Study (2025)</div>
+        </article>
+      </div>
+      </section>
+
+      <!-- ================================
+           04. Clarifying Questions
+      ================================= -->
+      <section class="section" id="questions">
+        <div class="section-head">
+          <div class="section-number">04</div>
+          <div>
+            <h2 class="section-title">Clarifying Questions</h2>
+          </div>
+        </div>
+
+        <div class="qa-list" id="qa-list">
+        <article class="qa-item">
+          <div class="qa-question">Q: What's the primary goal?</div>
+          <p class="qa-answer">→ Improve long-term user retention (CURR), especially the gap between first activation and a lasting daily habit. The secondary goal is to convert retained free users to paid.</p>
+        </article>
+      
+        <article class="qa-item">
+          <div class="qa-question">Q: Which retention stage are we targeting?</div>
+          <p class="qa-answer">→ All three stages matter: (1) New user activation (Days 1–10), (2) Habit maintenance (ongoing), and (3) Re-engagement for dormant users. This case study prioritises Stages 1 and 3 because they offer the clearest return.</p>
+        </article>
+      
+        <article class="qa-item">
+          <div class="qa-question">Q: What constraints exist?</div>
+          <p class="qa-answer">→ Must not hurt Duolingo's strong notification channel health. Must not compromise learning efficacy (Duolingo's academic reputation matters). New features should be buildable within existing gamification infrastructure.</p>
+        </article>
+      
+        <article class="qa-item">
+          <div class="qa-question">Q: How do we define success?</div>
+          <p class="qa-answer">→ +5pp improvement in CURR over 12 months, measurable in A/B testing. Leading indicator: Day-30 retention by user segment.</p>
+        </article>
+      </div>
+      </section>
+
+      <!-- ================================
+           05. User Research & Personas
+      ================================= -->
+      <section class="section" id="research">
+        <div class="section-head">
+          <div class="section-number">05</div>
+          <div>
+            <h2 class="section-title">User Research & Personas</h2>
+            <p class="section-kicker">
+              Based on Duolingo's public data, academic analysis of app usage behaviour, and product teardown research. The segmentation follows Duolingo's user state model: New → Current → At-Risk → Dormant → Resurrected.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid-2" id="persona-grid">
+        <article class="persona-card" style="--accent: #58CC02; --soft: #f0fde7;">
+          <div class="persona-head">
+            <div class="persona-emoji">🎯</div>
+            <div>
+              <div class="persona-name">The Ambitious Starter</div>
+              <div class="persona-meta">22–30 · University student / Young professional</div>
+            </div>
+          </div>
+
+          <p><strong>Goals:</strong> Learn a new language for travel or career advancement. Excited at sign-up but loses momentum after Week 1.</p>
+          <div class="small-label">Key Frustrations</div>
+          <ul><li>Lessons feel repetitive after a few days</li><li>No visible progress milestone to celebrate</li><li>Misses a few days, loses the streak, and feels like the progress is gone</li></ul>
+          <div class="retention-pill">Day 30 retention: ~15% (Casual segment)</div>
+          <div class="persona-quote">"I signed up to learn Spanish for my trip... then life got busy and I kept forgetting."</div>
+        </article>
+      
+        <article class="persona-card" style="--accent: #FF9600; --soft: #fff8ed;">
+          <div class="persona-head">
+            <div class="persona-emoji">🔥</div>
+            <div>
+              <div class="persona-name">The Streak Keeper</div>
+              <div class="persona-meta">25–40 · Working professional</div>
+            </div>
+          </div>
+
+          <p><strong>Goals:</strong> Maintain a daily streak as a personal challenge. They care a lot about the habit, so losing a streak feels like a real setback.</p>
+          <div class="small-label">Key Frustrations</div>
+          <ul><li>Streak Freeze runs out without warning</li><li>Losing a long streak is devastating and causes churn</li><li>Leaderboard competition feels unfair against bots</li></ul>
+          <div class="retention-pill">Day 30 retention: ~40% (Streak Master segment)</div>
+          <div class="persona-quote">"My 200-day streak broke because of a timezone glitch. I almost deleted the app."</div>
+        </article>
+      
+        <article class="persona-card" style="--accent: #1CB0F6; --soft: #edf9ff;">
+          <div class="persona-head">
+            <div class="persona-emoji">🎓</div>
+            <div>
+              <div class="persona-name">The Serious Learner</div>
+              <div class="persona-meta">28–45 · Professional / Academic</div>
+            </div>
+          </div>
+
+          <p><strong>Goals:</strong> Build real fluency, not only collect XP. They care about lesson depth and speaking practice.</p>
+          <div class="small-label">Key Frustrations</div>
+          <ul><li>Free tier lacks conversational speaking features</li><li>Gamification feels childish for serious study</li><li>Duolingo Max (AI features) only available in select countries</li></ul>
+          <div class="retention-pill">Highest retention but low conversion to paid without tangible fluency proof</div>
+          <div class="persona-quote">"I want to speak French, not just collect gems. The XP system feels hollow."</div>
+        </article>
+      
+        <article class="persona-card" style="--accent: #CE82FF; --soft: #f8f0ff;">
+          <div class="persona-head">
+            <div class="persona-emoji">😴</div>
+            <div>
+              <div class="persona-name">The Dormant Returner</div>
+              <div class="persona-meta">18–50 · Any</div>
+            </div>
+          </div>
+
+          <p><strong>Goals:</strong> Re-activate after a long absence. New Year's resolution or travel trigger sparks return.</p>
+          <div class="small-label">Key Frustrations</div>
+          <ul><li>Returning feels overwhelming because they feel too far behind</li><li>Push notifications become annoying after weeks of silence</li><li>No personalised re-onboarding path</li></ul>
+          <div class="retention-pill">Day 30 retention: ~5% (Inactive segment)</div>
+          <div class="persona-quote">"I came back after 6 months but had no idea where to start again."</div>
+        </article>
+      </div>
+        <p class="source-note">
+          Retention data sourced from: NextLeap Duolingo Data Analysis; Duolingo Q2 FY2024 SEC 8-K (streak engagement); StriveCloud (2025)
+        </p>
+      </section>
+
+      <!-- ================================
+           06. Pain Points
+      ================================= -->
+      <section class="section" id="painpoints">
+        <div class="section-head">
+          <div class="section-number">06</div>
+          <div>
+            <h2 class="section-title">Pain Points & User Journey Gaps</h2>
+          </div>
+        </div>
+
+        <div class="pain-list" id="pain-list">
+        <article class="pain-card" style="--accent: #ff4b4b; --soft: #fff0f0;">
+          <div class="pain-rank">1</div>
+          <div>
+            <div class="pain-title-row">
+              <div class="pain-title">Streak Loss = Permanent Churn</div>
+              <span class="impact-badge">Critical</span>
+            </div>
+            <p>A broken streak, especially after 30+ days, is one of the clearest churn triggers. Users can feel punished instead of supported. Days 2–10 are the highest-risk window.</p>
+            <div class="pain-foot">
+              <strong>Affected:</strong> Streak Keepers, Ambitious Starters · <em>Data: Streak Masters have 40% Day-30 retention vs 15% for Casual Learners</em>
+            </div>
+          </div>
+        </article>
+      
+        <article class="pain-card" style="--accent: #ff9600; --soft: #fff8ed;">
+          <div class="pain-rank">2</div>
+          <div>
+            <div class="pain-title-row">
+              <div class="pain-title">Weak Re-onboarding for Returners</div>
+              <span class="impact-badge">High</span>
+            </div>
+            <p>Dormant users who come back do not get a personalised re-entry path. The app shows the same homepage as before, which can make months of missed content feel overwhelming.</p>
+            <div class="pain-foot">
+              <strong>Affected:</strong> Dormant Returners · <em>Data: Inactive users: only 5% Day-30 retention</em>
+            </div>
+          </div>
+        </article>
+      
+        <article class="pain-card" style="--accent: #ff9600; --soft: #fff8ed;">
+          <div class="pain-rank">3</div>
+          <div>
+            <div class="pain-title-row">
+              <div class="pain-title">Notification Fatigue</div>
+              <span class="impact-badge">High</span>
+            </div>
+            <p>Duolingo's aggressive push notifications are famous. But at scale, once opt-out occurs, a key retention lever is permanently lost.</p>
+            <div class="pain-foot">
+              <strong>Affected:</strong> All segments, especially Dormant Returners · <em>Data: Notification opt-outs remove one of Duolingo's main retention channels</em>
+            </div>
+          </div>
+        </article>
+      
+        <article class="pain-card" style="--accent: #1cb0f6; --soft: #edf9ff;">
+          <div class="pain-rank">4</div>
+          <div>
+            <div class="pain-title-row">
+              <div class="pain-title">Gamification Ceiling for Serious Learners</div>
+              <span class="impact-badge">Medium</span>
+            </div>
+            <p>The core streak + XP loop retains casual users effectively but fails to satisfy learners seeking genuine fluency. They plateau and churn once they feel they're 'just gaming'.</p>
+            <div class="pain-foot">
+              <strong>Affected:</strong> Serious Learners · <em>Data: Duolingo's DAU/MAU ratio hit 34.7% in Q4 2024, which is strong, but the ceiling may be close</em>
+            </div>
+          </div>
+        </article>
+      
+        <article class="pain-card" style="--accent: #1cb0f6; --soft: #edf9ff;">
+          <div class="pain-rank">5</div>
+          <div>
+            <div class="pain-title-row">
+              <div class="pain-title">Low Social / Accountability Hooks</div>
+              <span class="impact-badge">Medium</span>
+            </div>
+            <p>Friend Streaks and leaderboards exist but friend discovery is friction-heavy. Social accountability is one of the strongest drivers of habit formation but remains underutilised.</p>
+            <div class="pain-foot">
+              <strong>Affected:</strong> Ambitious Starters, Streak Keepers · <em>Data: Only 1/3 of DAUs use Friend Streak despite it being a key retention feature</em>
+            </div>
+          </div>
+        </article>
+      </div>
+      </section>
+
+      <!-- ================================
+           07. Prioritization
+      ================================= -->
+      <section class="section" id="prioritization">
+        <div class="section-head">
+          <div class="section-number">07</div>
+          <div>
+            <h2 class="section-title">Pain Point Prioritisation</h2>
+            <p class="section-kicker">
+              Using a <strong>2×2 Impact vs. Addressability</strong> framework, the priority should be problems that are high-impact and that Duolingo can directly influence through product changes.
+            </p>
+          </div>
+        </div>
+
+        <div class="matrix" id="matrix">
+        <article class="matrix-cell" style="--accent: #58CC02; --soft: #f0fde7;">
+          <div class="matrix-label">High Impact / High Addressability</div>
+          <div class="matrix-item">→ Streak Loss = Churn</div><div class="matrix-item">→ Weak Re-onboarding</div>
+        </article>
+      
+        <article class="matrix-cell" style="--accent: #1CB0F6; --soft: #edf9ff;">
+          <div class="matrix-label">High Impact / Lower Addressability</div>
+          <div class="matrix-item">→ Notification Fatigue (channel health)</div>
+        </article>
+      
+        <article class="matrix-cell" style="--accent: #FF9600; --soft: #fff8ed;">
+          <div class="matrix-label">Lower Impact / High Addressability</div>
+          <div class="matrix-item">→ Social Hooks (Friend Streak expansion)</div>
+        </article>
+      
+        <article class="matrix-cell" style="--accent: #999999; --soft: #f7f7f7;">
+          <div class="matrix-label">Lower Impact / Lower Addressability</div>
+          <div class="matrix-item">→ Gamification ceiling for Serious Learners</div>
+        </article>
+      </div>
+
+        <p class="source-note">
+          Focus: Streak Loss and Re-onboarding are the highest-ROI problems. Notification Fatigue should be treated as a guardrail problem. It is important to protect, but harder to fully solve.
+        </p>
+      </section>
+
+      <!-- ================================
+           08. Solutions
+      ================================= -->
+      <section class="section" id="solutions">
+        <div class="section-head">
+          <div class="section-number">08</div>
+          <div>
+            <h2 class="section-title">Solutions</h2>
+            <p class="section-kicker">
+              Prioritised with the <strong>RICE framework</strong> (Reach × Impact × Confidence ÷ Effort). All scores use a 1–10 scale.
+            </p>
+          </div>
+        </div>
+
+        <div class="solution-list" id="solution-list">
+        <article class="solution-card open" style="--accent: #58CC02; --soft: #f0fde7;">
+          <button class="solution-summary" type="button" aria-expanded="true">
+            <div class="solution-icon">🔥</div>
+            <div>
+              <div class="solution-name-row">
+                <div class="solution-title">Smart Streak Recovery System</div>
+                <span class="solution-tag">P1: Ship</span>
+              </div>
+              <div class="rice-row">
+                <span><strong>R:</strong> 9</span>
+                <span><strong>I:</strong> 9</span>
+                <span><strong>C:</strong> 8</span>
+                <span><strong>E:</strong> 3</span>
+                <span class="rice-score">RICE: 216</span>
+              </div>
+            </div>
+            <div class="solution-toggle">▲</div>
+          </button>
+          <div class="solution-detail">
+            <p>Replace the binary streak-freeze model with a tiered Streak Shield system. If a user with a 7+ day streak misses one day, they automatically receive a grace-period repair option. For streaks longer than 30 days, offer a 'Comeback Repair' within 48 hours.</p>
+            <div class="why-box"><strong>Why this works:</strong> Streak loss is the #1 churn trigger. One improvement to the streak mechanic previously drove +6% DAU in Duolingo's internal experiments, according to Jorge Mazal, Head of Product.</div>
+          </div>
+        </article>
+      
+        <article class="solution-card " style="--accent: #58CC02; --soft: #f0fde7;">
+          <button class="solution-summary" type="button" aria-expanded="false">
+            <div class="solution-icon">🎯</div>
+            <div>
+              <div class="solution-name-row">
+                <div class="solution-title">Adaptive Re-onboarding for Returners</div>
+                <span class="solution-tag">P1: Ship</span>
+              </div>
+              <div class="rice-row">
+                <span><strong>R:</strong> 7</span>
+                <span><strong>I:</strong> 8</span>
+                <span><strong>C:</strong> 7</span>
+                <span><strong>E:</strong> 5</span>
+                <span class="rice-score">RICE: 78</span>
+              </div>
+            </div>
+            <div class="solution-toggle">▼</div>
+          </button>
+          <div class="solution-detail">
+            <p>When a user returns after 14+ days of inactivity, show a personalised 'Welcome Back' flow. This includes a 3-question micro-quiz to re-diagnose their level, a short refresh lesson for missed content, and a new 7-day re-engagement challenge with visible rewards.</p>
+            <div class="why-box"><strong>Why this works:</strong> Dormant returners have only 5% Day-30 retention. A more guided re-entry flow can reduce the feeling of being overwhelmed. Duolingo already saw a 20% next-day retention lift from moving sign-up after the first lesson, and the same 'show value first' logic applies here.</div>
+          </div>
+        </article>
+      
+        <article class="solution-card " style="--accent: #1CB0F6; --soft: #edf9ff;">
+          <button class="solution-summary" type="button" aria-expanded="false">
+            <div class="solution-icon">🔔</div>
+            <div>
+              <div class="solution-name-row">
+                <div class="solution-title">Intelligent Notification Personalisation</div>
+                <span class="solution-tag">P2: Next Quarter</span>
+              </div>
+              <div class="rice-row">
+                <span><strong>R:</strong> 10</span>
+                <span><strong>I:</strong> 7</span>
+                <span><strong>C:</strong> 6</span>
+                <span><strong>E:</strong> 6</span>
+                <span class="rice-score">RICE: 70</span>
+              </div>
+            </div>
+            <div class="solution-toggle">▼</div>
+          </button>
+          <div class="solution-detail">
+            <p>Build an ML model that personalises notification timing, frequency, and copy for each user based on open rates, session times, and engagement patterns. Add a 'Notification Fatigue Score' as a guardrail, so the system reduces frequency for users who are likely to opt out.</p>
+            <div class="why-box"><strong>Why this works:</strong> Duolingo's notification channel is one of its strongest retention levers, but opt-out removes a user from it. Protecting this channel helps retention compound over time.</div>
+          </div>
+        </article>
+      
+        <article class="solution-card " style="--accent: #1CB0F6; --soft: #edf9ff;">
+          <button class="solution-summary" type="button" aria-expanded="false">
+            <div class="solution-icon">👥</div>
+            <div>
+              <div class="solution-name-row">
+                <div class="solution-title">Social Accountability: Study Squads</div>
+                <span class="solution-tag">P2: Next Quarter</span>
+              </div>
+              <div class="rice-row">
+                <span><strong>R:</strong> 6</span>
+                <span><strong>I:</strong> 8</span>
+                <span><strong>C:</strong> 6</span>
+                <span><strong>E:</strong> 7</span>
+                <span class="rice-score">RICE: 41</span>
+              </div>
+            </div>
+            <div class="solution-toggle">▼</div>
+          </button>
+          <div class="solution-detail">
+            <p>Launch 'Study Squads', small groups of 3–5 users with shared weekly XP goals. Squads can set a goal, celebrate milestones together, and create light peer accountability. This can build on the existing Friend Streak infrastructure.</p>
+            <div class="why-box"><strong>Why this works:</strong> Friend Streak is used by only 1/3 of DAUs despite being proven to improve retention. Group accountability can be a much stronger motivator than solo streaks, especially when users feel seen by a small group.</div>
+          </div>
+        </article>
+      
+        <article class="solution-card " style="--accent: #CE82FF; --soft: #f8f0ff;">
+          <button class="solution-summary" type="button" aria-expanded="false">
+            <div class="solution-icon">🏆</div>
+            <div>
+              <div class="solution-name-row">
+                <div class="solution-title">Fluency Milestones for Serious Learners</div>
+                <span class="solution-tag">P3: Future</span>
+              </div>
+              <div class="rice-row">
+                <span><strong>R:</strong> 4</span>
+                <span><strong>I:</strong> 7</span>
+                <span><strong>C:</strong> 5</span>
+                <span><strong>E:</strong> 8</span>
+                <span class="rice-score">RICE: 18</span>
+              </div>
+            </div>
+            <div class="solution-toggle">▼</div>
+          </button>
+          <div class="solution-detail">
+            <p>Introduce a 'Fluency Passport', a visible and shareable certificate of language progress tied to completed story-mode arcs, conversation practice sessions, and vocabulary milestones. This positions Max subscription as the path to credentialed fluency.</p>
+            <div class="why-box"><strong>Why this works:</strong> Serious Learners can become high-LTV users, but they leave when progress does not feel useful in real life. Tangible, shareable milestones can support both retention and Max conversion.</div>
+          </div>
+        </article>
+      </div>
+        <div class="rice-summary" id="rice-summary">
+        <div class="rice-summary-title">RICE Priority Summary</div>
+        
+          <div class="bar-row" style="--accent: #58CC02;">
+            <div class="bar-name">Smart Streak Recovery System</div>
+            <div class="bar-track">
+              <div class="bar-fill" style="width: 98.18181818181819%"></div>
+            </div>
+            <div class="bar-value">216</div>
+          </div>
+        
+          <div class="bar-row" style="--accent: #58CC02;">
+            <div class="bar-name">Adaptive Re-onboarding for Returners</div>
+            <div class="bar-track">
+              <div class="bar-fill" style="width: 35.45454545454545%"></div>
+            </div>
+            <div class="bar-value">78</div>
+          </div>
+        
+          <div class="bar-row" style="--accent: #1CB0F6;">
+            <div class="bar-name">Intelligent Notification Personalisation</div>
+            <div class="bar-track">
+              <div class="bar-fill" style="width: 31.818181818181817%"></div>
+            </div>
+            <div class="bar-value">70</div>
+          </div>
+        
+          <div class="bar-row" style="--accent: #1CB0F6;">
+            <div class="bar-name">Social Accountability: Study Squads</div>
+            <div class="bar-track">
+              <div class="bar-fill" style="width: 18.636363636363637%"></div>
+            </div>
+            <div class="bar-value">41</div>
+          </div>
+        
+          <div class="bar-row" style="--accent: #CE82FF;">
+            <div class="bar-name">Fluency Milestones for Serious Learners</div>
+            <div class="bar-track">
+              <div class="bar-fill" style="width: 8.181818181818182%"></div>
+            </div>
+            <div class="bar-value">18</div>
+          </div>
+        
+      </div>
+      </section>
+
+      <!-- ================================
+           09. Success Metrics
+      ================================= -->
+      <section class="section" id="metrics">
+        <div class="section-head">
+          <div class="section-number">09</div>
+          <div>
+            <h2 class="section-title">Success Metrics</h2>
+          </div>
+        </div>
+
+        <div class="solution-list" id="metric-list">
+        <article class="metric-group">
+          <div class="metric-group-title">⭐ North Star</div>
+          
+            <div class="metric-row">
+              <div class="metric-name">Current User Retention Rate (CURR)</div>
+              <p class="metric-desc">% of active users who are still active 2 weeks later, Duolingo's internal North Star metric</p>
+              <div class="target-pill">+5pp over 12 months</div>
+            </div>
+          
+        </article>
+      
+        <article class="metric-group">
+          <div class="metric-group-title">📈 Engagement</div>
+          
+            <div class="metric-row">
+              <div class="metric-name">DAU/MAU Ratio</div>
+              <p class="metric-desc">Measures daily stickiness. Duolingo reached 34.7% in Q4 2024.</p>
+              <div class="target-pill">>38% by Q4 2025</div>
+            </div>
+          
+            <div class="metric-row">
+              <div class="metric-name">Day-1 / Day-7 / Day-30 Retention</div>
+              <p class="metric-desc">Segment by New Users, Returners, Streak Masters</p>
+              <div class="target-pill">+3pp on Day-30 for Returner segment</div>
+            </div>
+          
+            <div class="metric-row">
+              <div class="metric-name">Streak Continuation Rate</div>
+              <p class="metric-desc">% of at-risk streaks (days 2–10) that survive past Day 7</p>
+              <div class="target-pill">+15% with Smart Streak Recovery</div>
+            </div>
+          
+        </article>
+      
+        <article class="metric-group">
+          <div class="metric-group-title">💰 Monetisation</div>
+          
+            <div class="metric-row">
+              <div class="metric-name">Paid Subscriber Growth</div>
+              <p class="metric-desc">Shows whether retention is turning into revenue. Duolingo had 9.5M paid subscribers as of Q4 2024.</p>
+              <div class="target-pill">+20% YoY (vs current 43% growth)</div>
+            </div>
+          
+            <div class="metric-row">
+              <div class="metric-name">Free → Paid Conversion Rate</div>
+              <p class="metric-desc">% of free MAUs converting to any paid tier</p>
+              <div class="target-pill">Maintain >8.5% penetration</div>
+            </div>
+          
+        </article>
+      
+        <article class="metric-group">
+          <div class="metric-group-title">🛡️ Guardrails</div>
+          
+            <div class="metric-row">
+              <div class="metric-name">Notification Opt-Out Rate</div>
+              <p class="metric-desc">Must not increase, because channel health needs to be protected</p>
+              <div class="target-pill">Flat or declining YoY</div>
+            </div>
+          
+            <div class="metric-row">
+              <div class="metric-name">Learning Efficacy Score</div>
+              <p class="metric-desc">Internal score: lesson completion + vocab retention test results</p>
+              <div class="target-pill">No regression from gamification changes</div>
+            </div>
+          
+        </article>
+      </div>
+      </section>
+
+      <!-- ================================
+           10. Risks
+      ================================= -->
+      <section class="section" id="risks">
+        <div class="section-head">
+          <div class="section-number">10</div>
+          <div>
+            <h2 class="section-title">Risks & Mitigations</h2>
+          </div>
+        </div>
+
+        <div class="grid-2" id="risk-grid">
+          <article class="risk-card" style="--accent: #FF9600; --soft: #fff8ed;">
+            <div class="risk-head">
+              <div class="risk-title">Streak Shield abuse</div>
+              <span class="severity-badge">Medium</span>
+            </div>
+            <p>Users may exploit the grace-period mechanic to keep streaks without real engagement.</p>
+            <div class="mitigation"><strong>Mitigation:</strong> Require at least 1 lesson completed in the 48-hour repair window. Track XP earned, not just login.</div>
+          </article>
+        
+          <article class="risk-card" style="--accent: #FF9600; --soft: #fff8ed;">
+            <div class="risk-head">
+              <div class="risk-title">Re-onboarding feels condescending</div>
+              <span class="severity-badge">Medium</span>
+            </div>
+            <p>Returning advanced users may feel infantilised by a placement quiz.</p>
+            <div class="mitigation"><strong>Mitigation:</strong> Make re-onboarding skippable with one tap. Frame it as an 'optional warm-up', not a required step.</div>
+          </article>
+        
+          <article class="risk-card" style="--accent: #1CB0F6; --soft: #edf9ff;">
+            <div class="risk-head">
+              <div class="risk-title">Notification personalisation increases cost</div>
+              <span class="severity-badge">Low</span>
+            </div>
+            <p>An ML-based notification system needs meaningful engineering and infrastructure investment.</p>
+            <div class="mitigation"><strong>Mitigation:</strong> Phase 1: use rule-based segmentation with 3 tiers: high, medium, and low engager. Phase 2: move to an ML model.</div>
+          </article>
+        
+          <article class="risk-card" style="--accent: #1CB0F6; --soft: #edf9ff;">
+            <div class="risk-head">
+              <div class="risk-title">Study Squads cannibalize solo retention loops</div>
+              <span class="severity-badge">Low</span>
+            </div>
+            <p>Group dynamics may frustrate users whose friends are inactive, causing additional churn.</p>
+            <div class="mitigation"><strong>Mitigation:</strong> Match Squads by activity level using similar DAU patterns. Allow a silent solo mode inside a squad.</div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ================================
+           SOURCES
+      ================================= -->
+      <section class="sources">
+        <div class="sources-title">Sources & Citations</div>
+        <div id="sources-list">
+        <div class="source-item">[1] Duolingo Q4 FY2024 Shareholder Letter (SEC Form 8-K): DAU 40.5M, MAU 116.7M, Subscribers 9.5M, DAU/MAU 34.7%</div>
+      
+        <div class="source-item">[2] Duolingo Q3 FY2024 Shareholder Letter (SEC Form 8-K): DAU 37.2M (+54% YoY), MAU 113.1M (+36% YoY)</div>
+      
+        <div class="source-item">[3] Duolingo Q2 FY2024 Shareholder Letter (SEC Form 8-K): 'Over 20% of DAUs have streaks longer than a year'</div>
+      
+        <div class="source-item">[4] Duolingo Q1 FY2024 Shareholder Letter (SEC Form 8-K): 'DAU-to-MAU ratio reached a record high'</div>
+      
+        <div class="source-item">[5] Jorge Mazal, Head of Product at Duolingo: 'How Duolingo Reignited User Growth' (Lenny's Newsletter, Feb 2023): CURR +21%, DAU 4.5x</div>
+      
+        <div class="source-item">[6] StriveCloud: 'Duolingo Gamification Explained' (2025): Churn decline from 47% to 28%, next-day retention +20% from onboarding change</div>
+      
+        <div class="source-item">[7] NextLeap / Duolingo Data Analysis: Day-30 retention by segment (Streak Masters 40%, Casual 15%, Inactive 5%)</div>
+      
+        <div class="source-item">[8] Propel: 'Duolingo Customer Retention Strategy' (2025): CURR framework, notification guardrails</div>
+      </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>Improving Retention Rate on Duolingo. Product management case study for portfolio.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    /* Interactions only. Content is pre-rendered for GitHub Pages reliability. */
+    function setupSolutionAccordion() {
+      document.querySelectorAll(".solution-card").forEach((card) => {
+        const button = card.querySelector(".solution-summary");
+        const toggle = card.querySelector(".solution-toggle");
+        if (!button || !toggle) return;
+        button.addEventListener("click", () => {
+          const isOpen = card.classList.toggle("open");
+          button.setAttribute("aria-expanded", String(isOpen));
+          toggle.textContent = isOpen ? "▲" : "▼";
+        });
+      });
+    }
+
+    function setupActiveNavigation() {
+      if (!("IntersectionObserver" in window)) return;
+      const navLinks = Array.from(document.querySelectorAll(".nav-button"));
+      const sections = navLinks.map((link) => document.getElementById(link.dataset.section)).filter(Boolean);
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          navLinks.forEach((link) => {
+            link.classList.toggle("active", link.dataset.section === entry.target.id);
+          });
+        });
+      }, { rootMargin: "-30% 0px -55% 0px", threshold: 0.05 });
+      sections.forEach((section) => observer.observe(section));
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      setupSolutionAccordion();
+      setupActiveNavigation();
+    });
+  </script>
+</body>
+</html>
