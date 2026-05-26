@@ -231,16 +231,17 @@
     }
 
     .duo-face {
-      height: 170px;
-      border-radius: 24px;
-      display: grid;
-      place-items: center;
-      font-size: 5rem;
-      background:
-        radial-gradient(circle at 35% 35%, rgba(255,255,255,0.9), transparent 24%),
-        linear-gradient(135deg, var(--green-soft), #d8ffc2);
-      border: 1px solid rgba(88, 204, 2, 0.25);
-    }
+  height: 220px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 35% 35%, rgba(255,255,255,0.9), transparent 24%),
+    linear-gradient(135deg, var(--green-soft), #d8ffc2);
+  border: 1px solid rgba(88, 204, 2, 0.25);
+}
 
     .stat-grid {
       display: grid;
@@ -277,11 +278,17 @@
     }
 
     
-.duo-logo {
-  width: 200px;
-  height: auto;
-  object-fit: contain;
-  border: 2px solid red;
+.duo-face {
+  height: 220px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 35% 35%, rgba(255,255,255,0.9), transparent 24%),
+    linear-gradient(135deg, var(--green-soft), #d8ffc2);
+  border: 1px solid rgba(88, 204, 2, 0.25);
 }
 
 
@@ -1014,7 +1021,7 @@
               <div>
                 
 <div class="duo-face">
-  <img src="duolingo-logo.png" alt="Duolingo Logo" class="duo-logo">
+  <img src="./duolingo-logo.png" alt="Duolingo Logo" class="duo-logo" />
 </div>
 
                 <div class="stat-grid" id="stats-grid">
