@@ -1,12 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!--
-    Duolingo Retention Case Study
-    GitHub Pages-ready single-file version.
-    Save this file as index.html in the repository root.
-    Content is pre-rendered so the page still displays even if JavaScript fails.
-  -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="A product management case study on improving retention rate on Duolingo." />
@@ -234,11 +228,20 @@
     }
 
     .duo-face {
-      height: 170px;
-      border-radius: 24px;
-      display: grid;
-      place-items: center;
-      font-size: 5rem;
+  height: 170px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 10px;
+}
+
+.duo-face img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
       background:
         radial-gradient(circle at 35% 35%, rgba(255,255,255,0.9), transparent 24%),
         linear-gradient(135deg, var(--green-soft), #d8ffc2);
@@ -986,12 +989,6 @@
     ================================= -->
     <header class="hero">
       <div class="container">
-        <div class="topbar">
-          <div class="brand">
-            <span class="brand-mark">D</span>
-            <span>Product Case Study</span>
-          </div>
-          <div class="topbar-pill">Data from Duolingo SEC Filings & Public Sources</div>
         </div>
 
         <div class="hero-grid">
@@ -1013,7 +1010,9 @@
           <aside class="hero-card" aria-label="Duolingo key metrics">
             <div class="hero-card-inner">
               <div>
-                <div class="duo-face">🦉</div>
+              <div class="duo-face">
+  <img src="duolingo-logo.jpg" alt="Duolingo Logo">
+</div>
                 <div class="stat-grid" id="stats-grid">
         <div class="stat-card">
           <div class="stat-value">40.5M</div>
